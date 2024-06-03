@@ -3,7 +3,6 @@ const possibleChoices = document.querySelectorAll('button')
 const careerDiv = document.getElementById('career')
 
 // ALL TABLES //
-
 const careersArray = [
   'Alchemist',
   'Assassin',
@@ -34,7 +33,6 @@ const careersArray = [
 ]
 
 // BASIC FUNCTIONS //
-
 // pick a random element from an array
 function randomMath(input) {
   return input[Math.floor(Math.random() * input.length)]
@@ -46,7 +44,6 @@ function randomValue(max) {
 }
 
 // SPECIFIC FUNCTIONS //
-
 function getCareer() {
   careerDiv.innerHTML = rollCareer()
 }
@@ -59,16 +56,22 @@ function rollCareer() {
     let tempCareer = randomMath(careersArray)
     console.log(tempCareer)
     if (!pcCareers.some((career) => career.name === tempCareer)) {
-      //run only if career.name not already in array
+      // only runs if career.name not already in array
 
-      let tempValue = randomValue(maxTotalRanks)
+      let tempValue
+      if (pcCareers.length === 3) {
+        // if this is the last career, assign the remaining ranks to it
+        tempValue = maxTotalRanks
+      } else {
+        // assign a random value from 0 to remaining ranks to the career
+        tempValue = randomValue(maxTotalRanks)
+      }
+
       pcCareers.push({ name: tempCareer, rank: tempValue })
       maxTotalRanks = maxTotalRanks - tempValue
     }
   }
-  return pcCareers
-    .map((career) => `${career.name} (${career.rank})`)
-    .join(', ')
+  return pcCareers.map((career) => `${career.name} (${career.rank})`).join(', ')
 }
 
 // BUTTON FUNCTIONS //
