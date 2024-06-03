@@ -51,8 +51,8 @@ function getCareer() {
 // CHARACTER BUILDING BLOCKS //
 
 function rollCareer() {
-  pcPath = randomMath(careersArray);
-  return pcPath
+  pcCareer = randomMath(careersArray);
+  return pcCareer
 };
 
 
