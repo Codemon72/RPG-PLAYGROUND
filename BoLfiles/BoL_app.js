@@ -40,26 +40,35 @@ function randomMath(input) {
   return input[Math.floor(Math.random() * input.length)]
 }
 
+// generate a random number between 0 and max
+function randomValue(max) {
+  return Math.floor(Math.random() * (max + 1))
+}
+
 // SPECIFIC FUNCTIONS //
 
 function getCareer() {
   careerDiv.innerHTML = rollCareer()
-  // showStats();
 }
 
 // CHARACTER BUILDING BLOCKS //
-
 function rollCareer() {
   pcCareers = []
+  maxTotalRanks = 4
   while (pcCareers.length < 4) {
     let tempCareer = randomMath(careersArray)
     console.log(tempCareer)
-    if (!pcCareers.includes(tempCareer)) {
-      //run only if value not already in array
-      pcCareers.push(tempCareer)
+    if (!pcCareers.some((career) => career.name === tempCareer)) {
+      //run only if career.name not already in array
+
+      let tempValue = randomValue(maxTotalRanks)
+      pcCareers.push({ name: tempCareer, rank: tempValue })
+      maxTotalRanks = maxTotalRanks - tempValue
     }
   }
   return pcCareers
+    .map((career) => `${career.name} (${career.rank})`)
+    .join(', ')
 }
 
 // BUTTON FUNCTIONS //
