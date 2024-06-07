@@ -32,13 +32,13 @@ const careersArray = [
 
 // BASIC FUNCTIONS //
 // pick a random element from an array
-function randomMath(input) {
-  return input[Math.floor(Math.random() * input.length)]
+function randomMath(array) {
+  return array[Math.floor(Math.random() * array.length)]
 }
 
-// generate a random number between 0 and max
-function randomValue(max) {
-  return Math.floor(Math.random() * (max + 1))
+// generate a random number between 0 and maxNumber
+function randomValue(maxNumber) {
+  return Math.floor(Math.random() * (maxNumber + 1))
 }
 
 // SPECIFIC FUNCTIONS //
@@ -95,7 +95,6 @@ function rollCareers() {
   console.log(pcCareers)
   return pcCareers.map((career) => `${career.name} (${career.rank})`).join(', ')
 }
-// [{attribute: 'Strength', level: 0},{attribute:  'Agility', level: 0}, {attribute: 'Mind', level: 0}, {attribute: 'Appeal', level: 0}]
 
 // BUTTON FUNCTIONS //
 possibleChoices.forEach((possibleChoice) =>
