@@ -1,6 +1,7 @@
 // DOCUMENT REFERENCE VARIABLES //
 const possibleChoices = document.querySelectorAll('button')
 const attributesDiv = document.getElementById('attributes')
+const combatAbilitiesDiv = document.getElementById('combatAbilities')
 const careersDiv = document.getElementById('careers')
 
 // ALL TABLES //
@@ -50,6 +51,9 @@ function randomValue(maxNumber) {
 function getAttributes() {
   attributesDiv.innerHTML = rollAttributes()
 }
+function getCombatAbilities() {
+  combatAbilitiesDiv.innerHTML = rollCombatAbilities()
+}
 function getCareers() {
   careersDiv.innerHTML = rollCareers()
 }
@@ -73,6 +77,26 @@ function rollAttributes() {
 
   return pcAttributes
     .map((attribute) => `${attribute.attribute} (${attribute.level})`)
+    .join(', ')
+}
+
+function rollCombatAbilities() {
+  let pcCombatAbilities = combatAbilitiesArray.map((combAbili) => ({
+    combatAbility: combAbili,
+    level: 0,
+  }))
+  let currentTotal = 0
+
+  while (currentTotal < 4) {
+    let tempCombAbility = randomMath(pcCombatAbilities)
+    if (tempCombAbility.level < 3) {
+      tempCombAbility.level += 1
+      currentTotal += 1
+    }
+  }
+
+  return pcCombatAbilities
+    .map((combatAbility) => `${combatAbility.combatAbility} (${combatAbility.level})`)
     .join(', ')
 }
 
@@ -108,6 +132,9 @@ possibleChoices.forEach((possibleChoice) =>
     userChoice = e.target.id
     if (userChoice === 'attributes-btn') {
       getAttributes()
+    }
+    if (userChoice === 'combatAbilities-btn') {
+      getCombatAbilities()
     }
     if (userChoice === 'career-btn') {
       getCareers()
