@@ -6,6 +6,8 @@ const careersDiv = document.getElementById('careers')
 // ALL TABLES //
 const attributesArray = ['Strength', 'Agility', 'Mind', 'Appeal']
 
+const combatAbilitiesArray = ['Brawl', 'Melee', 'Ranged', 'Defence']
+
 const careersArray = [
   'Alchemist',
   'Assassin',
@@ -30,6 +32,9 @@ const careersArray = [
   'Torturer',
 ]
 
+// const originsArray = []
+
+
 // BASIC FUNCTIONS //
 // pick a random element from an array
 function randomMath(array) {
@@ -50,6 +55,7 @@ function getCareers() {
 }
 
 // CHARACTER BUILDING BLOCKS //
+
 function rollAttributes() {
   let pcAttributes = attributesArray.map((attr) => ({
     attribute: attr,
