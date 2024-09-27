@@ -113,11 +113,11 @@
           → <span id="lifeAPresent">0</span><br />
           <label>Melee Skill:</label><br />
           <div class="melee-row">
-            <input type="number" id="diceA"  value="3" placeholder="Dice" />
-            <input type="number" id="pipsA"  value="1" placeholder="Pips" />
+            <input type="number" id="diceA" value="3" placeholder="Dice" />
+            <input type="number" id="pipsA" value="1" placeholder="Pips" />
           </div>
           <label>Armor Rating:</label><br />
-          <input type="number" id="armorA" placeholder="AR" /><br />
+          <input type="number" id="armorA" value="2" placeholder="AR" /><br />
         </div>
 
         <div class="fight-container">
@@ -128,15 +128,15 @@
         <div class="fighter" id="fighterB">
           <h2>Fighter B</h2>
           <label>Life Points:</label><br />
-          <input type="number" id="lifeBConstant"  value="16"  placeholder="LP" />
+          <input type="number" id="lifeBConstant" value="16" placeholder="LP" />
           → <span id="lifeBPresent">0</span><br />
           <label>Melee Skill:</label><br />
           <div class="melee-row">
-            <input type="number" id="diceB"  value="2" placeholder="Dice" />
-            <input type="number" id="pipsB"  value="1" placeholder="Pips" />
+            <input type="number" id="diceB" value="2" placeholder="Dice" />
+            <input type="number" id="pipsB" value="1" placeholder="Pips" />
           </div>
           <label>Armor Rating:</label><br />
-          <input type="number" id="armorB" placeholder="AR" /><br />
+          <input type="number" id="armorB" value="4" placeholder="AR" /><br />
         </div>
       </div>
 
@@ -182,6 +182,9 @@
         const diceB = parseInt(document.getElementById('diceB').value) || 0
         const pipsB = parseInt(document.getElementById('pipsB').value) || 0
 
+        const armorA = parseInt(document.getElementById('armorA').value) || 0 // Get Armor Rating for Fighter A
+        const armorB = parseInt(document.getElementById('armorB').value) || 0 // Get Armor Rating for Fighter B
+
         if (initialLifeA === 0) initialLifeA = lifeAConstant
         if (initialLifeB === 0) initialLifeB = lifeBConstant
 
@@ -191,14 +194,33 @@
         const meleeB = rollsB.reduce((sum, roll) => sum + roll, 0) + pipsB
 
         let difference
+        let resultMessage = '' // Variable to hold the result message
+
         if (meleeA > meleeB) {
-          difference = meleeA - meleeB
-          lifeBPresent -= difference // No Math.max, allow negative values
+          difference = meleeA - meleeB - armorB // Subtract Fighter B's AR from the difference
+          if (difference <= 0) {
+            resultMessage = 'Fighter B saved by armor'
+          } else {
+            lifeBPresent -= difference // Apply damage to Fighter B
+            resultMessage =
+              difference >= 5
+                ? `<b>Fighter B receives a major wound of ${difference}</b>`
+                : `Fighter B receives a wound of ${difference}`
+          }
         } else if (meleeB > meleeA) {
-          difference = meleeB - meleeA
-          lifeAPresent -= difference // No Math.max, allow negative values
+          difference = meleeB - meleeA - armorA // Subtract Fighter A's AR from the difference
+          if (difference <= 0) {
+            resultMessage = 'Fighter A saved by armor'
+          } else {
+            lifeAPresent -= difference // Apply damage to Fighter A
+            resultMessage =
+              difference >= 5
+                ? `<b>Fighter A receives a major wound of ${difference}</b>`
+                : `Fighter A receives a wound of ${difference}`
+          }
         } else {
           difference = 0
+          resultMessage = 'Tie!'
         }
 
         const resultDiv = document.getElementById('result')
@@ -207,13 +229,7 @@
           ' + '
         )} + ${pipsA} = ${meleeA}</span>`
 
-        resultText += `<span style="text-align: center;">${
-          difference === 0
-            ? 'Tie!'
-            : difference >= 5
-            ? '<b>Major Wound: ' + difference + '</b>'
-            : 'Wound: ' + difference
-        }</span>`
+        resultText += `<span style="text-align: center;">${resultMessage}</span>` // Show the result message
 
         resultText += `<span>Fighter B: ${rollsB.join(
           ' + '
