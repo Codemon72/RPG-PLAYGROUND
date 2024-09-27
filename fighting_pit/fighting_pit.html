@@ -99,7 +99,7 @@
         justify-content: space-around;
       }
       .melee-row input {
-        width: 45%;
+        width: 4rem;
       }
     </style>
   </head>
@@ -109,15 +109,15 @@
         <div class="fighter" id="fighterA">
           <h2>Fighter A</h2>
           <label>Life Points:</label><br />
-          <input type="number" id="lifeAConstant" placeholder="Life Points" />
+          <input type="number" id="lifeAConstant" placeholder="LP" />
           → <span id="lifeAPresent">0</span><br />
           <label>Melee Skill:</label><br />
           <div class="melee-row">
-            <input type="number" id="diceA" placeholder="D" />
+            <input type="number" id="diceA" placeholder="Dice" />
             <input type="number" id="pipsA" placeholder="Pips" />
           </div>
           <label>Armor Rating:</label><br />
-          <input type="number" id="armorA" placeholder="Armor Rating" /><br />
+          <input type="number" id="armorA" placeholder="AR" /><br />
         </div>
 
         <div class="fight-container">
@@ -128,15 +128,15 @@
         <div class="fighter" id="fighterB">
           <h2>Fighter B</h2>
           <label>Life Points:</label><br />
-          <input type="number" id="lifeBConstant" placeholder="Life Points" />
+          <input type="number" id="lifeBConstant" placeholder="LP" />
           → <span id="lifeBPresent">0</span><br />
           <label>Melee Skill:</label><br />
           <div class="melee-row">
-            <input type="number" id="diceB" placeholder="D" />
+            <input type="number" id="diceB" placeholder="Dice" />
             <input type="number" id="pipsB" placeholder="Pips" />
           </div>
           <label>Armor Rating:</label><br />
-          <input type="number" id="armorB" placeholder="Armor Rating" /><br />
+          <input type="number" id="armorB" placeholder="AR" /><br />
         </div>
       </div>
 
@@ -193,10 +193,10 @@
         let difference
         if (meleeA > meleeB) {
           difference = meleeA - meleeB
-          lifeBPresent = Math.max(0, lifeBPresent - difference)
+          lifeBPresent -= difference // No Math.max, allow negative values
         } else if (meleeB > meleeA) {
           difference = meleeB - meleeA
-          lifeAPresent = Math.max(0, lifeAPresent - difference)
+          lifeAPresent -= difference // No Math.max, allow negative values
         } else {
           difference = 0
         }
