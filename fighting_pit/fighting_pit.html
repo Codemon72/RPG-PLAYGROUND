@@ -165,91 +165,111 @@
       }
 
       function fight() {
-        const lifeAConstant =
-          parseInt(document.getElementById('lifeAConstant').value) || 0
-        const lifeBConstant =
-          parseInt(document.getElementById('lifeBConstant').value) || 0
+    const lifeAConstant =
+        parseInt(document.getElementById('lifeAConstant').value) || 0;
+    const lifeBConstant =
+        parseInt(document.getElementById('lifeBConstant').value) || 0;
 
-        let lifeAPresent =
-          parseInt(document.getElementById('lifeAPresent').textContent) ||
-          lifeAConstant
-        let lifeBPresent =
-          parseInt(document.getElementById('lifeBPresent').textContent) ||
-          lifeBConstant
+    let lifeAPresent =
+        parseInt(document.getElementById('lifeAPresent').textContent) ||
+        lifeAConstant;
+    let lifeBPresent =
+        parseInt(document.getElementById('lifeBPresent').textContent) ||
+        lifeBConstant;
 
-        const diceA = parseInt(document.getElementById('diceA').value) || 0
-        const pipsA = parseInt(document.getElementById('pipsA').value) || 0
-        const diceB = parseInt(document.getElementById('diceB').value) || 0
-        const pipsB = parseInt(document.getElementById('pipsB').value) || 0
+    const diceA = parseInt(document.getElementById('diceA').value) || 0;
+    const pipsA = parseInt(document.getElementById('pipsA').value) || 0;
+    const diceB = parseInt(document.getElementById('diceB').value) || 0;
+    const pipsB = parseInt(document.getElementById('pipsB').value) || 0;
 
-        const armorA = parseInt(document.getElementById('armorA').value) || 0 // Get Armor Rating for Fighter A
-        const armorB = parseInt(document.getElementById('armorB').value) || 0 // Get Armor Rating for Fighter B
+    const armorA = parseInt(document.getElementById('armorA').value) || 0; // Get Armor Rating for Fighter A
+    const armorB = parseInt(document.getElementById('armorB').value) || 0; // Get Armor Rating for Fighter B
 
-        if (initialLifeA === 0) initialLifeA = lifeAConstant
-        if (initialLifeB === 0) initialLifeB = lifeBConstant
+    if (initialLifeA === 0) initialLifeA = lifeAConstant;
+    if (initialLifeB === 0) initialLifeB = lifeBConstant;
 
-        const rollsA = rollDice(diceA)
-        const rollsB = rollDice(diceB)
-        const meleeA = rollsA.reduce((sum, roll) => sum + roll, 0) + pipsA
-        const meleeB = rollsB.reduce((sum, roll) => sum + roll, 0) + pipsB
+    const rollsA = rollDice(diceA);
+    const rollsB = rollDice(diceB);
+    const meleeA = rollsA.reduce((sum, roll) => sum + roll, 0) + pipsA;
+    const meleeB = rollsB.reduce((sum, roll) => sum + roll, 0) + pipsB;
 
-        let difference
-        let resultMessage = '' // Variable to hold the result message
+    let difference;
+    let resultMessage = ''; // Variable to hold the result message
 
-        if (meleeA > meleeB) {
-          difference = meleeA - meleeB - armorB // Subtract Fighter B's AR from the difference
-          if (difference <= 0) {
-            resultMessage = 'Fighter B saved by armor'
-          } else {
-            lifeBPresent -= difference // Apply damage to Fighter B
-            resultMessage =
-              difference >= 5
-                ? `<b>Fighter B receives a major wound of ${difference}</b>`
-                : `Fighter B receives a wound of ${difference}`
-          }
-        } else if (meleeB > meleeA) {
-          difference = meleeB - meleeA - armorA // Subtract Fighter A's AR from the difference
-          if (difference <= 0) {
-            resultMessage = 'Fighter A saved by armor'
-          } else {
-            lifeAPresent -= difference // Apply damage to Fighter A
-            resultMessage =
-              difference >= 5
-                ? `<b>Fighter A receives a major wound of ${difference}</b>`
-                : `Fighter A receives a wound of ${difference}`
-          }
+    // Function to get wound location based on random number
+    function getWoundLocation() {
+        const woundLocations = [
+            'torso',
+            'left arm',
+            'left leg',
+            'right leg',
+            'right arm',
+            'head'
+        ];
+        return woundLocations[Math.floor(Math.random() * woundLocations.length)];
+    }
+
+    if (meleeA > meleeB) {
+        difference = meleeA - meleeB - armorB; // Subtract Fighter B's AR from the difference
+        if (difference <= 0) {
+            resultMessage = 'Fighter B saved by armor';
         } else {
-          difference = 0
-          resultMessage = 'Tie!'
+            lifeBPresent -= difference; // Apply damage to Fighter B
+            // Check if the wound is major (5 or higher)
+            if (difference >= 5) {
+                const woundLocation = getWoundLocation(); // Get wound location for major wound
+                resultMessage = `Fighter B receives a wound of ${difference} to the ${woundLocation}`;
+            } else {
+                resultMessage = `Fighter B receives a wound of ${difference}`;
+            }
         }
-
-        const resultDiv = document.getElementById('result')
-        let resultText = `<div class="result-line">`
-        resultText += `<span>Fighter A: ${rollsA.join(
-          ' + '
-        )} + ${pipsA} = ${meleeA}</span>`
-
-        resultText += `<span style="text-align: center;">${resultMessage}</span>` // Show the result message
-
-        resultText += `<span>Fighter B: ${rollsB.join(
-          ' + '
-        )} + ${pipsB} = ${meleeB}</span>`
-        resultText += `</div>`
-
-        const fighterADiv = document.getElementById('fighterA')
-        const fighterBDiv = document.getElementById('fighterB')
-        if (lifeAPresent <= 0) {
-          fighterADiv.classList.add('red')
+    } else if (meleeB > meleeA) {
+        difference = meleeB - meleeA - armorA; // Subtract Fighter A's AR from the difference
+        if (difference <= 0) {
+            resultMessage = 'Fighter A saved by armor';
+        } else {
+            lifeAPresent -= difference; // Apply damage to Fighter A
+            // Check if the wound is major (5 or higher)
+            if (difference >= 5) {
+                const woundLocation = getWoundLocation(); // Get wound location for major wound
+                resultMessage = `Fighter A receives a wound of ${difference} to the ${woundLocation}`;
+            } else {
+                resultMessage = `Fighter A receives a wound of ${difference}`;
+            }
         }
-        if (lifeBPresent <= 0) {
-          fighterBDiv.classList.add('red')
-        }
+    } else {
+        difference = 0;
+        resultMessage = 'Tie!';
+    }
 
-        document.getElementById('lifeAPresent').textContent = lifeAPresent
-        document.getElementById('lifeBPresent').textContent = lifeBPresent
+    const resultDiv = document.getElementById('result');
+    let resultText = `<div class="result-line">`;
+    resultText += `<span>Fighter A: ${rollsA.join(
+        ' + '
+    )} + ${pipsA} = ${meleeA}</span>`;
 
-        resultDiv.innerHTML += resultText
-      }
+    resultText += `<span style="text-align: center;">${resultMessage}</span>`; // Show the result message
+
+    resultText += `<span>Fighter B: ${rollsB.join(
+        ' + '
+    )} + ${pipsB} = ${meleeB}</span>`;
+    resultText += `</div>`;
+
+    const fighterADiv = document.getElementById('fighterA');
+    const fighterBDiv = document.getElementById('fighterB');
+    if (lifeAPresent <= 0) {
+        fighterADiv.classList.add('red');
+    }
+    if (lifeBPresent <= 0) {
+        fighterBDiv.classList.add('red');
+    }
+
+    document.getElementById('lifeAPresent').textContent = lifeAPresent;
+    document.getElementById('lifeBPresent').textContent = lifeBPresent;
+
+    resultDiv.innerHTML += resultText;
+}
+
 
       function resetGame() {
         document.getElementById('lifeAPresent').textContent =
