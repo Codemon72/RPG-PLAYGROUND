@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fighter Fight</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f9;
+      }
+      .container {
+        display: flex;
+        justify-content: space-around;
+        width: 80%;
+        max-width: 1000px;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        flex-direction: column;
+      }
+      .fighters-container {
+        display: flex;
+        justify-content: space-around;
+      }
+      .fighter {
+        flex: 1;
+        padding: 20px;
+        background-color: #f0f0f0;
+        border-radius: 10px;
+        margin: 0 10px;
+        text-align: center;
+      }
+      .fighter input {
+        margin: 10px 0;
+        padding: 5px;
+        width: 6rem;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+      }
+      .fighter h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      .fight-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .fight-btn {
+        background-color: #28a745;
+        color: white;
+        font-size: 18px;
+        padding: 10px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .fight-btn:hover {
+        background-color: #218838;
+      }
+      .result {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 18px;
+      }
+      .fighter.red {
+        background-color: #f8d7da;
+      }
+      .result-line {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+      }
+      .bold {
+        font-weight: bold;
+      }
+      .reset-btn {
+        background-color: #dc3545;
+        color: white;
+        font-size: 18px;
+        padding: 10px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+      .reset-btn:hover {
+        background-color: #c82333;
+      }
+      .melee-row {
+        display: flex;
+        justify-content: space-around;
+      }
+      .melee-row input {
+        width: 45%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="fighters-container">
+        <div class="fighter" id="fighterA">
+          <h2>Fighter A</h2>
+          <label>Life Points:</label><br />
+          <input type="number" id="lifeAConstant" placeholder="Life Points" />
+          → <span id="lifeAPresent">0</span><br />
+          <label>Melee Skill:</label><br />
+          <div class="melee-row">
+            <input type="number" id="diceA" placeholder="D" />
+            <input type="number" id="pipsA" placeholder="Pips" />
+          </div>
+          <label>Armor Rating:</label><br />
+          <input type="number" id="armorA" placeholder="Armor Rating" /><br />
+        </div>
+
+        <div class="fight-container">
+          <button class="fight-btn" onclick="fight()">Fight!</button>
+          <button class="reset-btn" onclick="resetGame()">Reset</button>
+        </div>
+
+        <div class="fighter" id="fighterB">
+          <h2>Fighter B</h2>
+          <label>Life Points:</label><br />
+          <input type="number" id="lifeBConstant" placeholder="Life Points" />
+          → <span id="lifeBPresent">0</span><br />
+          <label>Melee Skill:</label><br />
+          <div class="melee-row">
+            <input type="number" id="diceB" placeholder="D" />
+            <input type="number" id="pipsB" placeholder="Pips" />
+          </div>
+          <label>Armor Rating:</label><br />
+          <input type="number" id="armorB" placeholder="Armor Rating" /><br />
+        </div>
+      </div>
+
+      <div class="result" id="result"></div>
+    </div>
+
+    <script>
+      let initialLifeA = 0
+      let initialLifeB = 0
+
+      function rollDice(numDice) {
+        let rolls = []
+        for (let i = 0; i < numDice; i++) {
+          let roll = Math.floor(Math.random() * 6) + 1
+          rolls.push(roll)
+          // Check for exploding die only for the first die
+          if (i === 0 && roll === 6) {
+            // Continue rolling if the die is a 6
+            while (roll === 6) {
+              roll = Math.floor(Math.random() * 6) + 1
+              rolls.push(roll)
+            }
+          }
+        }
+        return rolls
+      }
+
+      function fight() {
+        const lifeAConstant =
+          parseInt(document.getElementById('lifeAConstant').value) || 0
+        const lifeBConstant =
+          parseInt(document.getElementById('lifeBConstant').value) || 0
+
+        let lifeAPresent =
+          parseInt(document.getElementById('lifeAPresent').textContent) ||
+          lifeAConstant
+        let lifeBPresent =
+          parseInt(document.getElementById('lifeBPresent').textContent) ||
+          lifeBConstant
+
+        const diceA = parseInt(document.getElementById('diceA').value) || 0
+        const pipsA = parseInt(document.getElementById('pipsA').value) || 0
+        const diceB = parseInt(document.getElementById('diceB').value) || 0
+        const pipsB = parseInt(document.getElementById('pipsB').value) || 0
+
+        if (initialLifeA === 0) initialLifeA = lifeAConstant
+        if (initialLifeB === 0) initialLifeB = lifeBConstant
+
+        const rollsA = rollDice(diceA)
+        const rollsB = rollDice(diceB)
+        const meleeA = rollsA.reduce((sum, roll) => sum + roll, 0) + pipsA
+        const meleeB = rollsB.reduce((sum, roll) => sum + roll, 0) + pipsB
+
+        let difference
+        if (meleeA > meleeB) {
+          difference = meleeA - meleeB
+          lifeBPresent = Math.max(0, lifeBPresent - difference)
+        } else if (meleeB > meleeA) {
+          difference = meleeB - meleeA
+          lifeAPresent = Math.max(0, lifeAPresent - difference)
+        } else {
+          difference = 0
+        }
+
+        const resultDiv = document.getElementById('result')
+        let resultText = `<div class="result-line">`
+        resultText += `<span>Fighter A: ${rollsA.join(
+          ' + '
+        )} + ${pipsA} = ${meleeA}</span>`
+
+        resultText += `<span style="text-align: center;">${
+          difference === 0
+            ? 'Tie!'
+            : difference >= 5
+            ? '<b>Major Wound: ' + difference + '</b>'
+            : 'Wound: ' + difference
+        }</span>`
+
+        resultText += `<span>Fighter B: ${rollsB.join(
+          ' + '
+        )} + ${pipsB} = ${meleeB}</span>`
+        resultText += `</div>`
+
+        const fighterADiv = document.getElementById('fighterA')
+        const fighterBDiv = document.getElementById('fighterB')
+        if (lifeAPresent <= 0) {
+          fighterADiv.classList.add('red')
+        }
+        if (lifeBPresent <= 0) {
+          fighterBDiv.classList.add('red')
+        }
+
+        document.getElementById('lifeAPresent').textContent = lifeAPresent
+        document.getElementById('lifeBPresent').textContent = lifeBPresent
+
+        resultDiv.innerHTML += resultText
+      }
+
+      function resetGame() {
+        document.getElementById('lifeAPresent').textContent =
+          document.getElementById('lifeAConstant').value
+        document.getElementById('lifeBPresent').textContent =
+          document.getElementById('lifeBConstant').value
+
+        const lifeAConstant =
+          parseInt(document.getElementById('lifeAConstant').value) || 0
+        const lifeBConstant =
+          parseInt(document.getElementById('lifeBConstant').value) || 0
+
+        document.getElementById('lifeAPresent').textContent = lifeAConstant
+        document.getElementById('lifeBPresent').textContent = lifeBConstant
+
+        document.getElementById('result').innerHTML = ''
+
+        const fighterADiv = document.getElementById('fighterA')
+        const fighterBDiv = document.getElementById('fighterB')
+        fighterADiv.classList.remove('red')
+        fighterBDiv.classList.remove('red')
+      }
+    </script>
+  </body>
+</html>
